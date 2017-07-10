@@ -200,7 +200,7 @@ vector<tuple<int, double>> internal_maxM(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 
 	in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
     	out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
-	p = fftw_plan_dft_1d(size, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+	p = fftw_plan_dft_1d(size, in, out, FFTW_BACKWARD, FFTW_ESTIMATE);
 
 	/* Compute and store Z values using Euler's Formula */
 	for(vector<tuple<ZZ_p, ZZ_p>>::iterator it = hcPairs->begin(); 
