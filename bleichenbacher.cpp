@@ -4,7 +4,7 @@
 #include <vector>
 #include <tuple>
 #include <complex>
-#include <parallel/algorithm>
+//#include <parallel/algorithm>
 #include <fftw3.h> 
 #include "bleichenbacher.h"
 
