@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A50D638820CF170500A89115 /* libfftw3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A50D638720CF170500A89115 /* libfftw3.dylib */; };
 		A541774520C8739300C2FA29 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A541774420C8739300C2FA29 /* main.cpp */; };
 		A541774D20C873BB00C2FA29 /* bleichenbacher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A541774C20C873BB00C2FA29 /* bleichenbacher.cpp */; };
+		A5D7F43C20CE353500E5313A /* libntl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A5D7F43B20CE353500E5313A /* libntl.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,10 +26,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A50D638720CF170500A89115 /* libfftw3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfftw3.dylib; path = ../../../../../../../usr/local/lib/libfftw3.dylib; sourceTree = "<group>"; };
 		A541774120C8739300C2FA29 /* Bleichenbacher-ECDSA-Nonce-Attack */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Bleichenbacher-ECDSA-Nonce-Attack"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A541774420C8739300C2FA29 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A541774B20C873BB00C2FA29 /* bleichenbacher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bleichenbacher.h; path = ../../../bleichenbacher.h; sourceTree = "<group>"; };
 		A541774C20C873BB00C2FA29 /* bleichenbacher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bleichenbacher.cpp; path = ../../../bleichenbacher.cpp; sourceTree = "<group>"; };
+		A5D7F43B20CE353500E5313A /* libntl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libntl.dylib; path = ../../../../../../../usr/local/lib/libntl.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +39,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5D7F43C20CE353500E5313A /* libntl.dylib in Frameworks */,
+				A50D638820CF170500A89115 /* libfftw3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,6 +52,7 @@
 			children = (
 				A541774320C8739300C2FA29 /* Bleichenbacher-ECDSA-Nonce-Attack */,
 				A541774220C8739300C2FA29 /* Products */,
+				A5D7F43620CE330400E5313A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,6 +72,15 @@
 				A541774C20C873BB00C2FA29 /* bleichenbacher.cpp */,
 			);
 			path = "Bleichenbacher-ECDSA-Nonce-Attack";
+			sourceTree = "<group>";
+		};
+		A5D7F43620CE330400E5313A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A50D638720CF170500A89115 /* libfftw3.dylib */,
+				A5D7F43B20CE353500E5313A /* libntl.dylib */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -244,9 +260,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = (
-					"/usr/local/Cellar/ntl/11.0.0/**",
-					"/usr/local/Cellar/fftw/3.3.7_1/**",
+				HEADER_SEARCH_PATHS = /usr/local/include/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -256,9 +273,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = (
-					"/usr/local/Cellar/ntl/11.0.0/**",
-					"/usr/local/Cellar/fftw/3.3.7_1/**",
+				HEADER_SEARCH_PATHS = /usr/local/include/;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

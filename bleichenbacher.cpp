@@ -5,7 +5,7 @@
 #include <tuple>
 #include <complex>
 //#include <parallel/algorithm>
-#include <fftw3.h> 
+#include <fftw3.h>
 #include "bleichenbacher.h"
 
 using namespace std;
@@ -119,15 +119,15 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 	int S;
 
 	S = hcPairs->size();
-	omp_set_nested(1);
-	omp_set_num_threads(NUM_CPUs * THREADS_PER_CPU);
+	//omp_set_nested(1);
+	//omp_set_num_threads(NUM_CPUs * THREADS_PER_CPU);
 
 	for(int i = 0; i < t; i++)
 	{
 		ZZ_p hFirst, cFirst;
 
-		__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(), 
-			compareHCtuple);
+		//__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
+		//	compareHCtuple);
 		
 		for(int j = 0; j <= S-t; j++)
 		{
@@ -154,8 +154,8 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 			hcPairs->at(i) = make_tuple(zero, zero);
 	}
 
-	__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(), 
-			compareHCtuple);
+	//__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
+	//		compareHCtuple);
 	
 	if(rep(get<1>((*hcPairs)[S-1])) == rep(zero))
 	{
