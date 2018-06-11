@@ -116,7 +116,7 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 {	
 	ZZ comp; 
 	ZZ_p zero;
-	int S;
+	unsigned long S;
 
 	S = hcPairs->size();
 	//omp_set_nested(1);
