@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		A50D638820CF170500A89115 /* libfftw3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A50D638720CF170500A89115 /* libfftw3.dylib */; };
+		A50D638C20CF190000A89115 /* libSystem.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A50D638B20CF190000A89115 /* libSystem.tbd */; };
 		A541774520C8739300C2FA29 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A541774420C8739300C2FA29 /* main.cpp */; };
 		A541774D20C873BB00C2FA29 /* bleichenbacher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A541774C20C873BB00C2FA29 /* bleichenbacher.cpp */; };
+		A5BFD62520DF6B32000A1FCB /* OpenCL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5BFD62420DF6B32000A1FCB /* OpenCL.framework */; };
 		A5D7F43C20CE353500E5313A /* libntl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A5D7F43B20CE353500E5313A /* libntl.dylib */; };
 /* End PBXBuildFile section */
 
@@ -27,10 +29,12 @@
 
 /* Begin PBXFileReference section */
 		A50D638720CF170500A89115 /* libfftw3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfftw3.dylib; path = ../../../../../../../usr/local/lib/libfftw3.dylib; sourceTree = "<group>"; };
+		A50D638B20CF190000A89115 /* libSystem.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libSystem.tbd; path = usr/lib/libSystem.tbd; sourceTree = SDKROOT; };
 		A541774120C8739300C2FA29 /* Bleichenbacher-ECDSA-Nonce-Attack */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Bleichenbacher-ECDSA-Nonce-Attack"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A541774420C8739300C2FA29 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A541774B20C873BB00C2FA29 /* bleichenbacher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bleichenbacher.h; path = ../../../bleichenbacher.h; sourceTree = "<group>"; };
 		A541774C20C873BB00C2FA29 /* bleichenbacher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bleichenbacher.cpp; path = ../../../bleichenbacher.cpp; sourceTree = "<group>"; };
+		A5BFD62420DF6B32000A1FCB /* OpenCL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCL.framework; path = System/Library/Frameworks/OpenCL.framework; sourceTree = SDKROOT; };
 		A5D7F43B20CE353500E5313A /* libntl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libntl.dylib; path = ../../../../../../../usr/local/lib/libntl.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -39,6 +43,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5BFD62520DF6B32000A1FCB /* OpenCL.framework in Frameworks */,
+				A50D638C20CF190000A89115 /* libSystem.tbd in Frameworks */,
 				A5D7F43C20CE353500E5313A /* libntl.dylib in Frameworks */,
 				A50D638820CF170500A89115 /* libfftw3.dylib in Frameworks */,
 			);
@@ -77,6 +83,8 @@
 		A5D7F43620CE330400E5313A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A5BFD62420DF6B32000A1FCB /* OpenCL.framework */,
+				A50D638B20CF190000A89115 /* libSystem.tbd */,
 				A50D638720CF170500A89115 /* libfftw3.dylib */,
 				A5D7F43B20CE353500E5313A /* libntl.dylib */,
 			);
@@ -260,10 +268,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = /usr/local/include/;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/Cellar/boost/1.67.0_1,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/lib,
+					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -273,10 +285,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = /usr/local/include/;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/Cellar/boost/1.67.0_1,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/lib,
+					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

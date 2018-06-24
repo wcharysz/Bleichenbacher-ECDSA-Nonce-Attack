@@ -7,6 +7,8 @@
 //#include <parallel/algorithm>
 #include <fftw3.h>
 #include "bleichenbacher.h"
+#include <dispatch/dispatch.h>
+#include <boost/compute.hpp>
 
 using namespace std;
 using namespace NTL;
@@ -126,6 +128,7 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 	{
 		ZZ_p hFirst, cFirst;
 
+        sort(hcPairs->begin(), hcPairs->end(), compareHCtuple);
 		//__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
 		//	compareHCtuple);
 		
@@ -154,8 +157,25 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 			hcPairs->at(i) = make_tuple(zero, zero);
 	}
 
+    //sort(hcPairs->begin(), hcPairs->end(), compareHCtuple);
+
 	//__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
 	//		compareHCtuple);
+    
+    namespace compute = boost::compute;
+    
+    // get the default compute device
+    compute::device gpu = compute::system::default_device();
+    
+    // create a compute context and command queue
+    compute::context ctx(gpu);
+    compute::command_queue queue(ctx, gpu);
+    
+    
+    compute::vector<tuple<ZZ_p, ZZ_p>> device_vector(hcPairs->size(), ctx);
+    compute::copy(hcPairs->begin(), hcPairs->end(), device_vector.begin(), queue);
+    compute::sort(device_vector.begin(), device_vector.end(), queue);
+    compute::copy(device_vector.begin(), device_vector.end(), hcPairs->begin(), queue);
 	
 	if(rep(get<1>((*hcPairs)[S-1])) == rep(zero))
 	{
