@@ -15,20 +15,17 @@ using namespace NTL;
 
 xdouble average, stdDev_accum;
 
-struct {
+bool compareHCtuple(tuple<ZZ_p, ZZ_p> a,
+                    tuple<ZZ_p, ZZ_p> b)
+{
+    ZZ a_ZZ, b_ZZ;
+    
+    a_ZZ = rep(get<1>(a));
+    b_ZZ = rep(get<1>(b));
+    
+    return a_ZZ < b_ZZ;
+}
 
-	bool operator()(tuple<ZZ_p, ZZ_p> a, 
-		tuple<ZZ_p, ZZ_p> b) const
-	{
-		ZZ a_ZZ, b_ZZ;
-
-		a_ZZ = rep(get<1>(a));
-		b_ZZ = rep(get<1>(b));
-	
-		return a_ZZ < b_ZZ;
-	}
-
-} compareHCtuple;
 
 template<class To, class From>
 To NTLtoOther(From *x)
@@ -128,7 +125,7 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 	{
 		ZZ_p hFirst, cFirst;
 
-        sort(hcPairs->begin(), hcPairs->end(), compareHCtuple);
+        //sort(hcPairs->begin(), hcPairs->end(), compareHCtuple);
 		//__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
 		//	compareHCtuple);
 		
@@ -172,9 +169,9 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
     compute::command_queue queue(ctx, gpu);
     
     
-    compute::vector<tuple<ZZ_p, ZZ_p>> device_vector(hcPairs->size(), ctx);
+    compute::vector<tuple<ZZ_p, ZZ_p>> device_vector(S, ctx);
     compute::copy(hcPairs->begin(), hcPairs->end(), device_vector.begin(), queue);
-    compute::sort(device_vector.begin(), device_vector.end(), queue);
+    compute::sort(device_vector.begin(), device_vector.end(), compareHCtuple, queue);
     compute::copy(device_vector.begin(), device_vector.end(), hcPairs->begin(), queue);
 	
 	if(rep(get<1>((*hcPairs)[S-1])) == rep(zero))
