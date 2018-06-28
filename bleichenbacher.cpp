@@ -9,6 +9,8 @@
 #include "bleichenbacher.h"
 #include <dispatch/dispatch.h>
 #include <boost/compute.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
+#include <boost/sort/sort.hpp>
 
 using namespace std;
 using namespace NTL;
@@ -120,27 +122,31 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 	S = hcPairs->size();
 	//omp_set_nested(1);
 	//omp_set_num_threads(NUM_CPUs * THREADS_PER_CPU);
+    namespace compute = boost::compute;
 
-	for(int i = 0; i < t; i++)
-	{
-		ZZ_p hFirst, cFirst;
-
-        //sort(hcPairs->begin(), hcPairs->end(), compareHCtuple);
-		//__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
-		//	compareHCtuple);
-		
-		for(int j = 0; j <= S-t; j++)
-		{
-			ZZ_p new_h, new_c;
-
-			sub(new_h, get<0>((*hcPairs)[j+1]), 
-				get<0>((*hcPairs)[j]));
-			sub(new_c, get<1>((*hcPairs)[j+1]), 
-				get<1>((*hcPairs)[j]));
-
-			hcPairs->at(j) = make_tuple(new_h, new_c);
-		}
-	}
+    dispatch_queue_t c_queue = dispatch_queue_create("myConcurrentQueue",
+                                                     DISPATCH_QUEUE_CONCURRENT);
+    
+    
+    dispatch_apply(t, c_queue, ^(size_t i) {        
+        //std::sort(hcPairs->begin(), hcPairs->end(), compareHCtuple);
+        //__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
+        //    compareHCtuple);
+        boost::sort::block_indirect_sort(hcPairs->begin(), hcPairs->end(), compareHCtuple
+                                         );
+        
+        for(int j = 0; j <= S-t; j++)
+        {
+            ZZ_p new_h, new_c;
+            
+            sub(new_h, get<0>((*hcPairs)[j+1]),
+                get<0>((*hcPairs)[j]));
+            sub(new_c, get<1>((*hcPairs)[j+1]),
+                get<1>((*hcPairs)[j]));
+            
+            hcPairs->at(j) = make_tuple(new_h, new_c);
+        }
+    });
 
 	/* Remove (h,c) pairs with c < 2^l */
 	
@@ -155,24 +161,24 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 	}
 
     //sort(hcPairs->begin(), hcPairs->end(), compareHCtuple);
-
 	//__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
 	//		compareHCtuple);
     
-    namespace compute = boost::compute;
     
     // get the default compute device
-    compute::device gpu = compute::system::default_device();
+    //compute::device gpu = compute::system::default_device();
     
     // create a compute context and command queue
-    compute::context ctx(gpu);
-    compute::command_queue queue(ctx, gpu);
+    //compute::context ctx(gpu);
+    //compute::command_queue queue(ctx, gpu);
     
+    //compute::vector<tuple<ZZ_p, ZZ_p>> device_vector(S, ctx);
+    //compute::copy(hcPairs->begin(), hcPairs->end(), device_vector.begin(), queue);
+    //compute::sort(device_vector.begin(), device_vector.end(), compareHCtuple, queue);
+    //compute::copy(device_vector.begin(), device_vector.end(), hcPairs->begin(), queue);
     
-    compute::vector<tuple<ZZ_p, ZZ_p>> device_vector(S, ctx);
-    compute::copy(hcPairs->begin(), hcPairs->end(), device_vector.begin(), queue);
-    compute::sort(device_vector.begin(), device_vector.end(), compareHCtuple, queue);
-    compute::copy(device_vector.begin(), device_vector.end(), hcPairs->begin(), queue);
+    boost::sort::block_indirect_sort(hcPairs->begin(), hcPairs->end(), compareHCtuple
+                                     );
 	
 	if(rep(get<1>((*hcPairs)[S-1])) == rep(zero))
 	{
