@@ -120,14 +120,10 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 	unsigned long S;
 
 	S = hcPairs->size();
-	//omp_set_nested(1);
-	//omp_set_num_threads(NUM_CPUs * THREADS_PER_CPU);
-    namespace compute = boost::compute;
+    //namespace compute = boost::compute;
 
-    dispatch_queue_t c_queue = dispatch_queue_create("myConcurrentQueue",
+    dispatch_queue_t c_queue = dispatch_queue_create("myConcurrentQueue1",
                                                      DISPATCH_QUEUE_CONCURRENT);
-    
-    
     dispatch_apply(t, c_queue, ^(size_t i) {        
         //std::sort(hcPairs->begin(), hcPairs->end(), compareHCtuple);
         //__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
@@ -154,11 +150,11 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 	zero = 0;
 	power(comp, comp, l);
 
-	for(int i = 0; i < S; i++)
-	{
-		if(rep(get<1>((*hcPairs)[i])) >= comp)		
-			hcPairs->at(i) = make_tuple(zero, zero);
-	}
+    dispatch_apply(S, c_queue, ^(size_t i) {
+        if(rep(get<1>((*hcPairs)[i])) >= comp)
+            hcPairs->at(i) = make_tuple(zero, zero);
+    });
+
 
     //sort(hcPairs->begin(), hcPairs->end(), compareHCtuple);
 	//__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
@@ -246,6 +242,7 @@ vector<tuple<int, double>> internal_maxM(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 
 	/* Get max |Z_m| */
 	average = 0;
+    
 	for(int i = 0; i < size; i++)
 	{
 		double magnitude;
