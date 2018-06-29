@@ -30,6 +30,7 @@
 /* Begin PBXFileReference section */
 		A50D638720CF170500A89115 /* libfftw3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfftw3.dylib; path = ../../../../../../../usr/local/lib/libfftw3.dylib; sourceTree = "<group>"; };
 		A50D638B20CF190000A89115 /* libSystem.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libSystem.tbd; path = usr/lib/libSystem.tbd; sourceTree = SDKROOT; };
+		A53F8BD920E5E81C00D7BE2F /* rsmTuples */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rsmTuples; sourceTree = "<group>"; };
 		A541774120C8739300C2FA29 /* Bleichenbacher-ECDSA-Nonce-Attack */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Bleichenbacher-ECDSA-Nonce-Attack"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A541774420C8739300C2FA29 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A541774B20C873BB00C2FA29 /* bleichenbacher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bleichenbacher.h; path = ../../../bleichenbacher.h; sourceTree = "<group>"; };
@@ -76,6 +77,7 @@
 				A541774420C8739300C2FA29 /* main.cpp */,
 				A541774B20C873BB00C2FA29 /* bleichenbacher.h */,
 				A541774C20C873BB00C2FA29 /* bleichenbacher.cpp */,
+				A53F8BD920E5E81C00D7BE2F /* rsmTuples */,
 			);
 			path = "Bleichenbacher-ECDSA-Nonce-Attack";
 			sourceTree = "<group>";

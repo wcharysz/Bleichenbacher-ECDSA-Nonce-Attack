@@ -130,7 +130,7 @@ ZZ MSBguessFromM(int m, int l, ZZ mod)
 
 void loadSigs(vector<tuple<ZZ_p, ZZ_p, ZZ_p>> *rsmTuples)
 {
-    ifstream in("rsmTuples");
+    ifstream in("rsmTuples", ios::in);
     string line;
     
     while(getline(in, line))
