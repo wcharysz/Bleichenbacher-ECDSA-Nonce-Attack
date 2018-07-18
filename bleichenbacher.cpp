@@ -4,11 +4,9 @@
 #include <vector>
 #include <tuple>
 #include <complex>
-//#include <parallel/algorithm>
 #include <fftw3.h>
 #include "bleichenbacher.h"
 #include <dispatch/dispatch.h>
-#include <boost/compute.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
 #include <boost/sort/sort.hpp>
 
@@ -120,14 +118,11 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 	unsigned long S;
 
 	S = hcPairs->size();
-    //namespace compute = boost::compute;
 
     dispatch_queue_t c_queue = dispatch_queue_create("myConcurrentQueue1",
                                                      DISPATCH_QUEUE_CONCURRENT);
-    dispatch_apply(t, c_queue, ^(size_t i) {        
-        //std::sort(hcPairs->begin(), hcPairs->end(), compareHCtuple);
-        //__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
-        //    compareHCtuple);
+    
+    for(int i = 0; i < t; i++) {
         boost::sort::block_indirect_sort(hcPairs->begin(), hcPairs->end(), compareHCtuple
                                          );
         
@@ -142,7 +137,7 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
             
             hcPairs->at(j) = make_tuple(new_h, new_c);
         }
-    });
+    }
 
 	/* Remove (h,c) pairs with c < 2^l */
 	
@@ -154,24 +149,6 @@ void sortAndDiff(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
         if(rep(get<1>((*hcPairs)[i])) >= comp)
             hcPairs->at(i) = make_tuple(zero, zero);
     });
-
-
-    //sort(hcPairs->begin(), hcPairs->end(), compareHCtuple);
-	//__gnu_parallel::sort(hcPairs->begin(), hcPairs->end(),
-	//		compareHCtuple);
-    
-    
-    // get the default compute device
-    //compute::device gpu = compute::system::default_device();
-    
-    // create a compute context and command queue
-    //compute::context ctx(gpu);
-    //compute::command_queue queue(ctx, gpu);
-    
-    //compute::vector<tuple<ZZ_p, ZZ_p>> device_vector(S, ctx);
-    //compute::copy(hcPairs->begin(), hcPairs->end(), device_vector.begin(), queue);
-    //compute::sort(device_vector.begin(), device_vector.end(), compareHCtuple, queue);
-    //compute::copy(device_vector.begin(), device_vector.end(), hcPairs->begin(), queue);
     
     boost::sort::block_indirect_sort(hcPairs->begin(), hcPairs->end(), compareHCtuple
                                      );
@@ -210,6 +187,8 @@ vector<tuple<int, double>> internal_maxM(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 	int Z_index_divisor,
 	int l)
 {
+    dispatch_queue_t c_queue = dispatch_queue_create("myConcurrentQueue2",
+                                                     DISPATCH_QUEUE_CONCURRENT);
 	int size;
 	fftw_complex *in, *out;
     	fftw_plan p;
@@ -222,7 +201,8 @@ vector<tuple<int, double>> internal_maxM(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 	p = fftw_plan_dft_1d(size, in, out, FFTW_BACKWARD, FFTW_ESTIMATE);
 
 	/* Compute and store Z values using Euler's Formula */
-	for(vector<tuple<ZZ_p, ZZ_p>>::iterator it = hcPairs->begin(); 
+    
+	for(vector<tuple<ZZ_p, ZZ_p>>::iterator it = hcPairs->begin();
 		it != hcPairs->end(); ++it)
 	{
 		int c;
@@ -252,7 +232,7 @@ vector<tuple<int, double>> internal_maxM(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 
 		if(indexValuePairs.size() < 10)
 		{
-			indexValuePairs.push_back(make_tuple(i, magnitude));
+            indexValuePairs.emplace_back(i, magnitude);
 		} else {
 			for(int j = 0; j < 10; j++)
 			{
@@ -281,16 +261,16 @@ vector<tuple<int, double>> internal_maxM(vector<tuple<ZZ_p, ZZ_p>> *hcPairs,
 	}
 
 	/* Compute square of standard deviation */
-	stdDev_accum = 0;	
-	for(int i = 0; i < size; i++)
-	{
-		xdouble term;
-		term = abs(complex<double>((out[i])[0], (out[i])[1])) 
-			/ hcPairs->size();
-		term -= average;
-		power(term, term, 2);
-		stdDev_accum += term;
-	}
+	stdDev_accum = 0;
+    dispatch_apply(size, c_queue, ^(size_t i) {
+        xdouble term;
+        term = abs(complex<double>((out[i])[0], (out[i])[1]))
+        / hcPairs->size();
+        term -= average;
+        power(term, term, 2);
+        stdDev_accum += term;
+    });
+
 	stdDev_accum /= size;
 
 	fftw_destroy_plan(p);
